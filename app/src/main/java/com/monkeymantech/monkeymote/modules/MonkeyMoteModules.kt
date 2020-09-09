@@ -30,7 +30,7 @@ val networkModule = module {
 }
 
 fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-    return Retrofit.Builder().baseUrl(BuildConfig.API_URL).client(okHttpClient)
+    return Retrofit.Builder().baseUrl("https://10.0.1.6").client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create()).build()
 }
 
