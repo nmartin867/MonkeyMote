@@ -1,9 +1,7 @@
 package com.monkeymantech.monkeymote
 
-import android.content.Context
-import android.net.wifi.WifiManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.monkeymantech.monkeymote.ui.main.MainFragment
 import org.koin.android.ext.android.inject
 
@@ -18,13 +16,6 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                     .replace(R.id.container, mainFragment)
                     .commitNow()
-        }
-
-        fun test(){
-            val wifi = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-            val mCastLock = wifi.createMulticastLock("multicastLock")
-            mCastLock.setReferenceCounted(true)
-            mCastLock.acquire()
         }
     }
 }
