@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import com.monkeymantech.monkeymote.R
 import com.orhanobut.logger.Logger
@@ -40,7 +38,7 @@ class MainFragment : Fragment() {
     }
 
     suspend fun findServiceProviders() {
-        Logger.d("Acquiring MulticastLock")
+         Logger.d("Acquiring MulticastLock")
         val wifi = activity!!.getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
         val multicastLock = wifi!!.createMulticastLock("multicastLock")
         multicastLock.setReferenceCounted(true)
@@ -49,9 +47,9 @@ class MainFragment : Fragment() {
         val udpSocket = DatagramSocket()
         udpSocket.broadcast = true
 
-        Logger.d("Sending discovery packet to: 255.255.255.255 (DEFAULT)")
+        Logger.d("Sending discovery packet to: 239.255.255.250")
         val sendData = "M-SEARCH * HTTP/1.1\r\nHOST:239.255.255.250:1900\r\nMAN:\"ssdp:discover\"\r\nST:ssdp:all\r\nMX:3\r\n\r\n".toByteArray()
-        val sendPacket = DatagramPacket(sendData, sendData.size, InetAddress.getByName("255.255.255.255"), 8888)
+        val sendPacket = DatagramPacket(sendData, sendData.size, InetAddress.getByName("239.255.255.250"), 1900)
         udpSocket.send(sendPacket)
 
         Logger.d("Searching network devices")
@@ -68,6 +66,16 @@ class MainFragment : Fragment() {
                     udpSocket.send(packet)
                 }
             }
+
+            val buffer = ByteArray(15000)
+            val receivePacket = DatagramPacket(buffer, buffer.size)
+            udpSocket.receive(receivePacket)
+
+            Logger.d("Received packet from ${receivePacket.address.hostName} port ${receivePacket.port}")
+            val message = String(receivePacket.data).trim()
+
+            Logger.d("Packet message: $message")
+
         }
     }
 }
